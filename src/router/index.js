@@ -14,6 +14,26 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/Login.vue'),
     },
+    {
+      path: '/order',
+      name: 'order',
+      component: () => import('../views/Order.vue'),
+    },
+    {
+      path: '/income',
+      name: 'laporanPemasukan',
+      component: () => import('../views/LaporanPemasukan.vue'),
+    },
+    {
+      path: '/expenditure',
+      name: 'laporanPengeluaran',
+      component: () => import('../views/LaporanPengeluaran.vue'),
+    },
+    {
+      path: '/report',
+      name: 'laporanTahunan',
+      component: () => import('../views/LaporanTahunan.vue'),
+    },
   ],
 })
 

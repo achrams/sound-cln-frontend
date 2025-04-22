@@ -1,45 +1,23 @@
 <template>
   <div class="min-h-screen flex">
     <!-- Sidebar -->
-    <div
-      class="md:w-56 lg:w-72 hidden h-screen md:flex bg-gray-200 text-black py-5 flex-col items-center shadow-lg shadow-gray-700">
-      <img src="../assets/estlogo.png" alt="EST Logo" class="w-36 mb-5">
-      <div class="w-full h-screen text-center">
-        <a @click="goTo('/')" :class="currentRoute == '/' ? 'bg-gray-300 scale-105 shadow-gray-900' : 'bg-none'"
-          class="block cursor-pointer py-3 px-4 font-semibold text-lg bg-gray-200 hover:bg-gray-400 hover:scale-105 duration-150 delay-75 hover:text-white shadow-xs shadow-gray-950">Dashboard</a>
-        <a @click="goTo('/order')" :class="currentRoute == '/order' ? 'bg-gray-300 scale-105' : 'bg-none'"
-          class="block cursor-pointer py-3 px-4 font-semibold text-lg bg-gray-200 hover:bg-gray-400 hover:scale-105 duration-150 delay-75 hover:text-white">Order</a>
-        <a @click="goTo('/income')" :class="currentRoute == '/income' ? 'bg-gray-300 scale-105' : 'bg-none'"
-          class="block cursor-pointer py-3 px-4 font-semibold text-lg bg-gray-200 hover:bg-gray-400 hover:scale-105 duration-150 delay-75 hover:text-white">Laporan
-          Pemasukan</a>
-        <a @click="goTo('/expenditure')" :class="currentRoute == '/expenditure' ? 'bg-gray-300 scale-105' : 'bg-none'"
-          class="block cursor-pointer py-3 px-4 font-semibold text-lg bg-gray-200 hover:bg-gray-400 hover:scale-105 duration-150 delay-75 hover:text-white">Laporan
-          Pengeluaran</a>
-        <a @click="goTo('/report')" :class="currentRoute == '/report' ? 'bg-gray-300 scale-105' : 'bg-none'"
-          class="block cursor-pointer py-3 px-4 font-semibold text-lg bg-gray-200 hover:bg-gray-400 hover:scale-105 duration-150 delay-75 hover:text-white">Laporan
-          Tahunan</a>
-        <a class="mt-5 block cursor-pointer py-3 px-4 font-semibold text-lg hover:bg-gray-400 hover:scale-105 duration-150 delay-75 hover:text-white bottom-0"
-          @click="logout()">Log
-          Out</a>
-      </div>
-    </div>
-
+    <SideBar />
     <!-- Main Content -->
-    <div class="flex-1 p-5 bg-gray-100 w-full">
+    <div class="flex flex-col justify-center items-center p-5 bg-gray-100 w-full">
       <div
-        class="flex justify-between flex-wrap bg:none md:bg-red-800 text-white p-5 rounded-lg mb-5 md:shadow-md md:shadow-gray-700">
+        class="flex justify-between flex-wrap bg:none md:bg-[#6d1b23] w-full text-white p-5 rounded-lg mb-5 md:shadow-md md:shadow-gray-700">
         <div
-          class="text-left md:text-center p-2 md:p-0 bg-red-800 my-2 md:my-0 rounded-lg md:rounded-none text-wrap w-full md:w-1/3 text-sm md:text-md">
+          class="text-left md:text-center p-2 md:p-0 bg-[#6d1b23]my-2 md:my-0 rounded-lg md:rounded-none text-wrap w-full md:w-1/3 text-sm md:text-md">
           <div>Pemasukan / Bulan</div>
           <div id="pemasukanBulan">Rp 0</div>
         </div>
         <div
-          class="text-left md:text-center p-2 md:p-0 bg-red-800 my-2 md:my-0 rounded-lg md:rounded-none text-wrap w-full md:w-1/3 text-sm md:text-md">
+          class="text-left md:text-center p-2 md:p-0 bg-[#6d1b23] my-2 md:my-0 rounded-lg md:rounded-none text-wrap w-full md:w-1/3 text-sm md:text-md">
           <div>Pengeluaran / Bulan</div>
           <div id="pengeluaranBulan">Rp 0</div>
         </div>
         <div
-          class="text-left md:text-center p-2 md:p-0 bg-red-800 my-2 md:my-0 rounded-lg md:rounded-none text-wrap w-full md:w-1/3 text-sm md:text-md">
+          class="text-left md:text-center p-2 md:p-0 bg-[#6d1b23]my-2 md:my-0 rounded-lg md:rounded-none text-wrap w-full md:w-1/3 text-sm md:text-md">
           <div>Total / Tahun</div>
           <div id="totalTahun">Rp 0</div>
         </div>
@@ -59,7 +37,7 @@
       </div>
       <div class="w-full mb-5 rounded-t-lg shadow-md shadow-gray-700 bg-none">
         <div class="rounded-t-lg">
-          <div class="bg-red-800 text-white flex text-left md:text-center rounded-t-lg">
+          <div class="bg-[#6d1b23] text-white flex text-left md:text-center rounded-t-lg">
             <div class="p-2 text-xs md:text-lg w-1/12">No.</div>
             <div class="p-2 text-xs md:text-lg w-2/12">Nama Paket</div>
             <div class="p-2 text-xs md:text-lg w-5/12">Desc</div>
@@ -70,12 +48,12 @@
         <div>
           <div class="text-left md:text-center flex border-b-1 border-gray-400" v-for="(item, index) in paket"
             :key="item.nama + index">
-            <div class="p-2 bg-[#71f4e2] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
-            <div class="p-2 bg-[#a0fff2] text-xs md:text-lg w-2/12">{{ item.nama }}</div>
-            <div class="p-2 bg-[#71f4e2] text-xs md:text-lg text-wrap w-5/12">{{ item.desc }}</div>
-            <div class="p-2 bg-[#a0fff2] text-xs md:text-lg w-3/12 md:w-2/12">{{ item.harga }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.nama }}</div>
+            <div class="p-2 bg-[#D1D5DB ] text-xs md:text-lg text-wrap w-5/12">{{ item.desc }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-3/12 md:w-2/12">{{ item.harga }}</div>
             <div
-              class="p-2 bg-[#71f4e2] text-xs md:text-lg w-3/12 md:w-3/12 lg:w-2/12 flex flex-wrap justify-center items-center">
+              class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-3/12 md:w-3/12 lg:w-2/12 flex flex-wrap justify-center items-center">
               <div class="w-full md:w-full lg:w-1/6 p-1">
                 <button class="bg-gray-600 text-white text-xs p-2 cursor-pointer hover:bg-gray-900 rounded-4xl"><svg
                     xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
@@ -113,7 +91,7 @@
       </div>
       <div class="w-full rounded-t-lg shadow-md shadow-gray-700 bg-none mb-12">
         <div class="rounded-t-lg">
-          <div class="bg-red-800 text-white flex text-left md:text-center rounded-t-lg">
+          <div class="bg-[#6d1b23] text-white flex text-left md:text-center rounded-t-lg">
             <div class="p-2 text-xs md:text-lg w-1/12">No.</div>
             <div class="p-2 text-xs md:text-lg w-6/12">Nama Barang</div>
             <div class="p-2 text-xs md:text-lg w-1/12">Qty</div>
@@ -124,12 +102,12 @@
         <div>
           <div class="text-left md:text-center flex border-b-1 border-gray-400" v-for="(item, index) in barang"
             :key="item.nama + index">
-            <div class="p-2 bg-[#71f4e2] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
-            <div class="p-2 bg-[#a0fff2] text-xs md:text-lg w-6/12">{{ item.nama }}</div>
-            <div class="p-2 bg-[#71f4e2] text-xs md:text-lg w-1/12">{{ item.qty }}</div>
-            <div class="p-2 bg-[#a0fff2] text-xs md:text-lg w-3/12 md:w-2/12">{{ item.harga }}</div>
+            <div class="p-2 bg-#D1D5DB] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-6/12">{{ item.nama }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-1/12">{{ item.qty }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-3/12 md:w-2/12">{{ item.harga }}</div>
             <div
-              class="p-2 bg-[#71f4e2] text-xs md:text-lg w-3/12 md:w-3/12 lg:w-2/12 flex flex-wrap justify-center items-center">
+              class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-3/12 md:w-3/12 lg:w-2/12 flex flex-wrap justify-center items-center">
               <div class="w-full md:w-full lg:w-1/6 p-1">
                 <button class="bg-gray-600 text-white text-xs p-2 cursor-pointer hover:bg-gray-900 rounded-4xl"><svg
                     xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
@@ -158,16 +136,18 @@
   </div>
 
   <!-- Footer -->
-  <footer class="text-center py-3 bg-red-800 text-white w-full bottom-0 z-10">
+  <footer class="text-center py-3 bg-[#6d1b23] text-white w-full bottom-0 z-10">
     © All Rights Reserved.
   </footer>
 </template>
 
 <script>
+import SideBar from '@/components/Sidebar.vue';
 import ModalWindow from '../components/Modal.vue'
 export default {
   components: {
-    ModalWindow
+    ModalWindow,
+    SideBar
   },
   name: 'DashboardEST',
   data() {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-full h-screen flex flex-col items-center justify-center bg-[#e8e6e3]">
+    <div class="w-full h-screen flex flex-col items-center justify-center bg-gray-300">
       <div class="w-full md:w-1/3 h-full md:h-fit p-12 bg-white rounded-lg flex flex-col items-center">
         <div class="w-1/2 md:w-1/3 my-4">
           <img src="../assets/estlogo.png" alt="EST Logo" class="w-full h-auto">
@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <footer class="p-2 bg-[#6d1b23] text-white absolute bottom-0 w-full">
+    <footer class="text-center py-3 bg-[#6d1b23] text-white w-full bottom-0 z-10">
       © All Rights Reserved.
     </footer>
   </div>
