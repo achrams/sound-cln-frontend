@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex bg-gray-50">
     <SideBar />
-    <div class="flex flex-col justify-center items-center p-5 bg-gray-100 w-full">
+    <div class="flex flex-col items-center p-5 bg-gray-100 w-full">
       <div class="flex justify-center items-center mb-6">
         <h2 class="text-3xl font-bold text-[#6d1b23]">Laporan Tahunan</h2>
       </div>
@@ -31,14 +31,14 @@
           <div class="text-left md:text-center flex border-b-1 border-gray-400" v-for="(item, index) in filteredLaporan"
             :key="item.id">
             <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
-            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.tanggal }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.tipe }}</div>
-            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.nominal }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.nama_pemesan }}</div>
-            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.keterangan }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ formatDate(item.createdAt) }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.transaction_type }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.total }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.name }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-3/12">{{ item.description }}</div>
           </div>
         </div>
-      </div>    
+      </div>
       <div class="flex justify-center mt-6">
         <button @click="downloadFile" class="px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
           Download File
@@ -53,7 +53,8 @@
 
 <script>
 import SideBar from '@/components/Sidebar.vue';
-
+import axios from 'axios';
+import * as XLSX from 'xlsx';
 export default {
   components: {
     SideBar,
@@ -68,21 +69,52 @@ export default {
   },
   computed: {
     filteredLaporan() {
-      return this.laporan.filter(item => item.year === this.selectedYear);
+      return this.laporan.filter(item => new Date(item.createdAt).getFullYear() === this.selectedYear);
     }
   },
   methods: {
-    fetchData() {
-      this.laporan = [
-        { id: 1, tanggal: '2024-03-05', tipe: 'Pembelian', nominal: 50000, nama_pemesan: 'Atika', keterangan: 'Pembelian alat musik', year: 2024 },
-        { id: 2, tanggal: '2024-07-12', tipe: 'Penyewaan', nominal: 75000, nama_pemesan: 'Agung', keterangan: 'Sewa speaker', year: 2024 },
-      ];
+    async fetchData() {
+      try {
+        const income = await axios.get('http://localhost:3000/income');
+        const expenses = await axios.get('http://localhost:3000/expenses');
+        income.data.forEach(item => item.transaction_type = 'Pemasukan');
+        expenses.data.forEach(item => item.transaction_type = 'Pengeluaran');
+        const res = [...income.data, ...expenses.data];
+        res.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+        this.laporan = res
+        console.log('Laporan fetched successfully:', this.laporan);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     },
     downloadFile() {
-      console.log('Downloading laporan tahunan...');
+      // Ambil data yang sudah difilter
+      const data = this.filteredLaporan.map((item, index) => ({
+        No: index + 1,
+        'Tanggal Transaksi': this.formatDate(item.createdAt),
+        'Tipe Transaksi': item.transaction_type,
+        Nominal: item.total,
+        'Nama Pemesan': item.name,
+        Keterangan: item.description
+      }));
+
+      // Buat worksheet dan workbook
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Laporan Tahunan');
+
+      // Simpan file
+      XLSX.writeFile(workbook, `laporan_${this.selectedYear}.xlsx`);
+    },
+    formatDate(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(date).toLocaleDateString('id-ID', options);
     }
   },
   created() {
+    if (localStorage.getItem('token') === null) {
+      this.$router.push('/login')
+    }
     const currentYear = new Date().getFullYear();
     this.selectedYear = currentYear;
     this.fetchData();

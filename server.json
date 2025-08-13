@@ -1,0 +1,149 @@
+{
+  "user": {
+    "name": "John Doe",
+    "email": "admin@mail.com",
+    "role": "admin",
+    "password": "admin"
+  },
+  "items": [
+    {
+      "name": "Begitu",
+      "qty": 5,
+      "price": 5000,
+      "id": "93de"
+    },
+    {
+      "id": "9c54",
+      "name": "Begini",
+      "qty": 3,
+      "price": 90000
+    }
+  ],
+  "packages": [
+    {
+      "name": "Paket 1",
+      "description": "tester",
+      "price": 67000,
+      "id": "70fc"
+    },
+    {
+      "id": "2fb4",
+      "name": "Paket 2",
+      "description": "Initnya ini paket",
+      "price": 40000
+    }
+  ],
+  "income": [
+    {
+      "name": "Budi",
+      "phone": "08123456789",
+      "itemList": "Paket 1",
+      "status": "Lunas",
+      "type": "Package",
+      "description": "Paket 1, Begitu",
+      "price": 67000,
+      "qty": 1,
+      "total": 67000,
+      "id": "70fc",
+      "createdAt": "2025-08-01T12:00:00Z",
+      "updatedAt": "2025-08-01T12:00:00Z"
+    },
+    {
+      "id": "d3a4",
+      "name": "Mahmud",
+      "phone": "08129292929",
+      "itemList": "Paket 1",
+      "description": "Begitu",
+      "type": "Package",
+      "price": 77000,
+      "qty": 2,
+      "total": 154000,
+      "createdAt": "2025-08-13T10:13:05.578Z",
+      "updatedAt": "2025-08-13T10:13:05.578Z"
+    },
+    {
+      "id": "9315",
+      "name": "Randi",
+      "phone": "080808111",
+      "itemList": "Begitu",
+      "description": "Begitu",
+      "type": "Item",
+      "price": 25000,
+      "qty": 3,
+      "total": 75000,
+      "createdAt": "2025-08-13T10:28:48.187Z",
+      "updatedAt": "2025-08-13T10:28:48.187Z"
+    }
+  ],
+  "expenses": [
+    {
+      "name": "Atika",
+      "phone": "08123456789",
+      "itemList": "Begitu",
+      "type": "Item",
+      "status": "Lunas",
+      "qty": 5,
+      "total": 25000,
+      "description": "Pengeluaran untuk keperluan operasional",
+      "price": 50000,
+      "id": "1234",
+      "createdAt": "2025-08-01T12:00:00Z",
+      "updatedAt": "2025-08-01T12:00:00Z"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "eb6f",
+      "name": "Mahmud",
+      "address": "est jakarta",
+      "phone": "08129292929",
+      "email": "lalala@gmail.com",
+      "package": {
+        "name": "Paket 1",
+        "description": "tester",
+        "price": 67000,
+        "id": "70fc"
+      },
+      "items": [
+        {
+          "name": "Begitu",
+          "qty": 2,
+          "price": 5000,
+          "id": "93de"
+        }
+      ],
+      "rentalDate": "2025-08-14",
+      "returnDate": "2025-08-16",
+      "rentalDuration": 2,
+      "paymentMethod": "Transfer",
+      "paymentStatus": "Lunas",
+      "totalPrice": 154000,
+      "createdAt": "2025-08-13T10:13:05.561Z",
+      "updatedAt": "2025-08-13T10:13:05.561Z"
+    },
+    {
+      "id": "3d25",
+      "name": "Randi",
+      "address": "kampung makasar",
+      "phone": "080808111",
+      "email": "rerere@gmail.com",
+      "package": "",
+      "items": [
+        {
+          "name": "Begitu",
+          "qty": 5,
+          "price": 5000,
+          "id": "93de"
+        }
+      ],
+      "rentalDate": "2025-08-15",
+      "returnDate": "2025-08-18",
+      "rentalDuration": 3,
+      "paymentMethod": "Cash",
+      "paymentStatus": "Lunas",
+      "totalPrice": 75000,
+      "createdAt": "2025-08-13T10:28:48.168Z",
+      "updatedAt": "2025-08-13T10:28:48.168Z"
+    }
+  ]
+}

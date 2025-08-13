@@ -1,18 +1,18 @@
 <template>
   <div class="min-h-screen flex bg-gray-50">
     <SideBar />
-    <div class="flex flex-col justify-center items-center p-5 bg-gray-100 w-full">
+    <div class="flex flex-col items-center p-5 bg-gray-100 w-full">
       <div class="flex justify-center items-center mb-6">
         <h2 class="text-3xl font-bold text-[#6d1b23]">Laporan Pengeluaran</h2>
       </div>
 
       <div class="flex justify-center gap-4 mb-6">
-        <select v-model="selectedMonth"
-          class="p-3 border border-red-900 rounded-lg shadow-sm bg-white text-black-800 font-bold">
-          <option v-for="(month, index) in months" :key="index" :value="month">{{ month }}</option>
+        <select @change="changeDate" v-model="selectedMonth"
+          class="p-3 border border-[#6d1b23] rounded-lg shadow-sm bg-white text-black-800 font-bold">
+          <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
         </select>
-        <select v-model="selectedYear"
-          class="p-3 border border-red-900 rounded-lg shadow-sm bg-white text-black-800 font-bold">
+        <select @change="changeDate" v-model="selectedYear"
+          class="p-3 border border-[#6d1b23] rounded-lg shadow-sm bg-white text-black-800 font-bold">
           <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
       </div>
@@ -32,16 +32,21 @@
             <div class="p-2 text-xs md:text-lg w-2/12">Harga</div>
           </div>
         </div>
-        <div>
+        <div v-if="paket.length">
           <div class="text-left md:text-center flex border-b-1 border-gray-400" v-for="(item, index) in paket"
             :key="item.nama + index">
             <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
-            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.nama_pemesan }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.no_hp }}</div>
-            <div class="p-2 bg-[##E5E7EB] text-xs md:text-lg w-2/12">{{ item.nama_barang }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.keterangan }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.name }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.phone }}</div>
+            <div class="p-2 bg-[##E5E7EB] text-xs md:text-lg w-2/12">{{ item.itemList }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.description }}</div>
             <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-1/12">{{ item.qty }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.harga }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.total }}</div>
+          </div>
+        </div>
+        <div v-else>
+          <div class="text-left md:text-center flex items-center justify-center border-b-1 border-gray-400 h-24">
+            No Data Available
           </div>
         </div>
       </div>
@@ -61,28 +66,32 @@
             <div class="p-2 text-xs md:text-lg w-2/12">Harga</div>
           </div>
         </div>
-        <div>
+        <div v-if="barang.length">
           <div class="text-left md:text-center flex border-b-1 border-gray-400" v-for="(item, index) in barang"
             :key="item.nama + index">
             <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-1/12">{{ index + 1 }}</div>
-            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.nama_pemesan }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.no_hp }}</div>
-            <div class="p-2 bg-[##E5E7EB] text-xs md:text-lg w-2/12">{{ item.nama_barang }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.keterangan }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.name }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.phone }}</div>
+            <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-2/12">{{ item.itemList }}</div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.description }}</div>
             <div class="p-2 bg-[#E5E7EB] text-xs md:text-lg w-1/12">{{ item.qty }}</div>
-            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.harga }}</div>
-          </div>
+            <div class="p-2 bg-[#D1D5DB] text-xs md:text-lg w-2/12">{{ item.total }}</div>
           </div>
         </div>
-        <div class="flex justify-center mt-6">
-          <button @click="downloadFile"
-            class="px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
-            Download File
-          </button>
+        <div v-else>
+          <div class="text-left md:text-center flex items-center justify-center border-b-1 border-gray-400 h-24">
+            No Data Available
+          </div>
         </div>
       </div>
+      <div class="flex justify-center mt-6">
+        <button @click="downloadFile" class="px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
+          Download File
+        </button>
+      </div>
     </div>
-    <footer class="text-center py-3 bg-[#6d1b23] text-white w-full bottom-0 z-10">
+  </div>
+  <footer class="text-center py-3 bg-[#6d1b23] text-white w-full bottom-0 z-10">
     © All Rights Reserved.
   </footer>
 </template>
@@ -90,7 +99,7 @@
 <script>
 import SideBar from '@/components/Sidebar.vue';
 import ModalWindow from '../components/Modal.vue';
-
+import axios from 'axios';
 export default {
   components: {
     ModalWindow,
@@ -110,15 +119,10 @@ export default {
       barang: [],
     };
   },
-  computed: {
-    filteredPaket() {
-      return this.paket.filter(item => item.year === this.selectedYear && item.month === this.selectedMonth);
-    },
-    filteredBarang() {
-      return this.barang.filter(item => item.year === this.selectedYear && item.month === this.selectedMonth);
-    }
-  },
   methods: {
+    changeDate() {
+      this.fetchData();
+    },
     goTo(route) {
       if (this.$route.path !== route) this.$router.push(route);
     },
@@ -130,21 +134,28 @@ export default {
       localStorage.removeItem('token');
       this.$router.push('/login');
     },
-    fetchData() {
+    async fetchData() {
 
-      this.paket = [
-        { id: 1, nama_pemesan: 'atika', no_hp: '08123456789', nama_barang: 'Paket Murah Meriah', keterangan: 'Mic, Mixer, 2 Soundsystem', qty: 1, harga: 50000, month: 'Maret', year: 2024 },
-        { id: 2, nama_pemesan: 'agung', no_hp: '08234567890', nama_barang: 'Paket Premium', keterangan: 'Mic, Mixer, 3 Soundsystem', qty: 1, harga: 100000, month: 'Maret', year: 2024 },
-      ];
-      this.barang = [
-        { id: 1, nama_pemesan: 'fatia', no_hp: '08122334455', nama_barang: 'Soundsystem ATRAC 250', keterangan: 'High quality', qty: 1, harga: 150000, month: 'Maret', year: 2024 },
-        { id: 2, nama_pemesan: 'sukron', no_hp: '08133445566', nama_barang: 'Speaker Pioneer 200 db', keterangan: 'Loud sound', qty: 1, harga: 75000, month: 'Maret', year: 2024 },
-      ];
+      const response = await axios.get('http://localhost:3000/expenses', {
+        params: {
+          month: this.selectedMonth,
+          year: this.selectedYear
+        }
+      });
+
+      const filteredPaket = response.data.filter(item => item.type === 'Package');
+      const filteredBarang = response.data.filter(item => item.type === 'Item');
+      this.paket = filteredPaket
+      this.barang = filteredBarang;
     }
   },
   created() {
+    if (localStorage.getItem('token') === null) {
+      this.$router.push('/login')
+    }
     const dateArr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }).split(" ");
-    this.selectedMonth = dateArr[1];
+    console.log(dateArr);
+    this.selectedMonth = this.months.indexOf(dateArr[1]) + 1; // Convert month name to index
     this.selectedYear = dateArr[2];
     this.fetchData();
   }

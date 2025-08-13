@@ -3,7 +3,7 @@
         <!-- Sidebar -->
         <SideBar />
         <!-- Main Content -->
-        <div class="flex flex-col justify-center items-center p-5 bg-gray-100 w-full">
+        <div class="flex flex-col items-center p-5 bg-gray-100 w-full">
             <div class="flex justify-center items-center mb-6">
                 <h2 class="text-3xl font-bold text-[#6d1b23]">Form Penyewaan</h2>
             </div>
@@ -30,19 +30,17 @@
                     <div>
                         <label class="block font-bold">Pilih Paket:</label>
                         <select v-model="form.paket" class="border border-black w-full p-2 rounded-md">
-                            <option>Paket A</option>
-                            <option>Paket B</option>
-                            <option>Paket C</option>
+                            <option selected value="">Pilih Paket</option>
+                            <option v-for="item in packages" :value="item">{{ item.name }}</option>
                         </select>
 
                         <label class="block font-bold mt-2">Pilih Add-on:</label>
                         <div class="flex space-x-2">
-                            <select v-model="form.addon.name" class="border border-black w-2/5 p-2 rounded-md">
-                                <option>Item 1</option>
-                                <option>Item 2</option>
-                                <option>Item 3</option>
+                            <select v-model="addOnSelection" class="border border-black w-2/5 p-2 rounded-md">
+                                <option selected :value="{}">Pilih Add-On</option>
+                                <option v-for="item in items" :value="item">{{ item.name }}</option>
                             </select>
-                            <input type="number" v-model="form.addon.qty" min="1"
+                            <input type="number" v-model="addOnSelection.qty" min="1" default="1"
                                 class="border border-black w-1/4 p-2 rounded-md" placeholder="Qty" />
                             <button @click="addItem" class="bg-green-500 text-white px-4 py-2 rounded-md">Add</button>
                         </div>
@@ -110,6 +108,7 @@
 
 <script>
 import SideBar from '@/components/Sidebar.vue';
+import axios from 'axios';
 export default {
     components: { SideBar },
     data() {
@@ -119,23 +118,45 @@ export default {
                 alamat: '',
                 noTelp: '',
                 email: '',
-                paket: 'Paket A',
-                addon: { name: '', qty: 0 },
+                paket: '',
                 tanggalSewa: '',
                 tanggalPengembalian: '',
                 lamaSewa: '',
                 metodePembayaran: 'Cash',
                 statusPembayaran: 'Lunas'
             },
+            addOnSelection: {},
+            packages: [],
+            items: [],
             orderList: []
         };
     },
+    created() {
+        this.getPackages();
+        this.getItems();
+    },
     methods: {
+        async getPackages() {
+            try {
+                const response = await axios.get('http://localhost:3000/packages');
+                this.packages = response.data;
+            } catch (error) {
+                console.error("Error fetching packages:", error);
+            }
+        },
+        async getItems() {
+            try {
+                const response = await axios.get('http://localhost:3000/items');
+                this.items = response.data;
+            } catch (error) {
+                console.error("Error fetching items:", error);
+            }
+        },
         addItem() {
-            if (this.form.addon.name && this.form.addon.qty > 0) {
-                const exists = this.orderList.find(item => item.name === this.form.addon.name);
+            if (this.addOnSelection && this.addOnSelection.qty > 0) {
+                const exists = this.orderList.find(item => item.name === this.addOnSelection.name);
                 if (!exists) {
-                    this.orderList.push({ ...this.form.addon });
+                    this.orderList.push({ ...this.addOnSelection });
                 } else {
                     alert("Item sudah ada dalam daftar order");
                 }
@@ -155,7 +176,44 @@ export default {
             console.log("Back button clicked");
         },
         Order() {
-            console.log("Order button clicked", this.form);
+            const totalPackagePrice = this.form.paket ? this.form.paket.price : 0;
+            const totalItemsPrice = this.orderList.reduce((total, item) => total + (item.price * item.qty), 0);
+            const totalPrice = (totalPackagePrice + totalItemsPrice) * this.form.lamaSewa;
+            axios.post('http://localhost:3000/invoices', {
+                name: this.form.nama,
+                address: this.form.alamat,
+                phone: this.form.noTelp,
+                email: this.form.email,
+                package: this.form.paket,
+                items: this.orderList,
+                rentalDate: this.form.tanggalSewa,
+                returnDate: this.form.tanggalPengembalian,
+                rentalDuration: this.form.lamaSewa,
+                paymentMethod: this.form.metodePembayaran,
+                paymentStatus: this.form.statusPembayaran,
+                totalPrice: totalPrice,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            })
+                .then(response => {
+                    console.log("Order successful:", response.data);
+                    return axios.post('http://localhost:3000/income', {
+                        name: this.form.nama,
+                        phone: this.form.noTelp,
+                        itemList: this.form.paket.name ? this.form.paket.name : this.orderList.map(item => item.name).join(', '),
+                        description: this.orderList.map(item => item.name).join(', '),
+                        type: this.form.paket.name ? 'Package' : 'Item',
+                        price: totalPackagePrice + totalItemsPrice,
+                        qty: this.form.lamaSewa,
+                        total: totalPrice,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    });
+                    this.$router.push('/'); // Redirect to invoices page
+                })
+                .catch(error => {
+                    console.error("Error placing order:", error);
+                });
         }
     }
 };

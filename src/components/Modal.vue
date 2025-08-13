@@ -11,7 +11,7 @@
             <path d="m6 6 12 12"></path>
           </svg></button>
         <div class="flex flex-col items-center p-4">
-          <h1 class="text-4xl font-bold text-gray-800 mt-12">Tambah {{ type }}</h1>
+          <h1 class="text-4xl font-bold text-gray-800 mt-12">{{ mode == 'add' ? 'Tambah' : 'Edit' }} {{ type }}</h1>
           <div class="w-full md:w-3/4">
             <input type="text" class="w-full p-2 border-b-2 outline-0 mt-12" :placeholder="`Nama ${type}`"
               v-model="nama">
@@ -25,7 +25,7 @@
             <div class="flex justify-center items-center mt-4">
               <button
                 class="w-full p-2 my-12 bg-red-900 text-white rounded-xl shadow-md shadow-gray-700 outline-0 cursor-pointer hover:bg-red-950"
-                type="submit">Tambah</button>
+                type="submit" @click="saveData">Simpan</button>
             </div>
           </div>
         </div>
@@ -34,18 +34,56 @@
   </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
   name: 'ModalWindow',
-  props: ['type'],
+  props: ['type', 'mode', 'selectedItem'],
   data() {
     return {
-      nama: '',
-      deskripsi: '',
-      harga: '',
-      qty: '',
+      nama: this.selectedItem ? this.selectedItem.name : '',
+      deskripsi: this.selectedItem ? this.selectedItem.description : '',
+      harga: this.selectedItem ? this.selectedItem.price : '',
+      qty: this.selectedItem ? this.selectedItem.qty : 0,
     }
   },
   methods: {
+    async saveData() {
+      try {
+        if (this.type === 'Paket') {
+          if (this.mode === 'add') {
+            const result = await axios.post('http://localhost:3000/packages', {
+              name: this.nama,
+              description: this.deskripsi,
+              price: this.harga
+            });
+          } else if (this.mode === 'edit') {
+            const result = await axios.put(`http://localhost:3000/packages/${this.selectedItem.id}`, {
+              name: this.nama,
+              description: this.deskripsi,
+              price: this.harga
+            });
+          }
+        } else if (this.type === 'Barang') {
+          if (this.mode === 'add') {
+            const result = await axios.post('http://localhost:3000/items', {
+              name: this.nama,
+              qty: this.qty,
+              price: this.harga
+            });
+          } else if (this.mode === 'edit') {
+            const result = await axios.put(`http://localhost:3000/items/${this.selectedItem.id}`, {
+              name: this.nama,
+              qty: this.qty,
+              price: this.harga
+            });
+          }
+        }
+      } catch (err) {
+
+      }
+
+    },
     closeModal() {
       this.$emit('closeModal');
     }
