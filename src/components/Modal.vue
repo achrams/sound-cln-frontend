@@ -57,14 +57,14 @@ export default {
               description: this.deskripsi,
               price: this.harga
             });
-            location.reload();
+            this.$emit('done');
           } else if (this.mode === 'edit') {
             const result = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/packages/${this.selectedItem.id}`, {
               name: this.nama,
               description: this.deskripsi,
               price: this.harga
             });
-            location.reload();
+            this.$emit('done');
 
           }
         } else if (this.type === 'Barang') {
@@ -74,7 +74,7 @@ export default {
               qty: this.qty,
               price: this.harga
             });
-            location.reload();
+            this.$emit('done');
 
           } else if (this.mode === 'edit') {
             const result = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/items/${this.selectedItem.id}`, {
@@ -82,8 +82,7 @@ export default {
               qty: this.qty,
               price: this.harga
             });
-            location.reload();
-
+            this.$emit('done');
           }
         }
       } catch (err) {

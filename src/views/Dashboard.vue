@@ -147,7 +147,7 @@
       </div>
     </div>
     <ModalWindow v-if="showModal" @closeModal="showModal = false" :mode="modalMode" :type="modalType"
-      :selectedItem="selectedItem" />
+      :selectedItem="selectedItem" @done="refreshData" />
   </div>
 
   <!-- Footer -->
@@ -260,6 +260,12 @@ export default {
     logout() {
       localStorage.removeItem('token')
       this.$router.push('/login')
+    },
+    refreshData() {
+      this.showModal = false;
+      this.getPackages();
+      this.getItems();
+      this.getCalculations();
     }
   },
   created() {
