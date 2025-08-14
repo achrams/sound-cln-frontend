@@ -15,5 +15,5 @@ export default defineConfig({
   server: {
     port: 40002,
   },
-  base: "/sound-cln-frontend/",
+  base: "/",
 });
