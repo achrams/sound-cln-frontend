@@ -152,6 +152,11 @@ export default {
       this.barang = filteredBarang;
     },
 
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+
     downloadExcel() {
       const data = this.allData.map((item, index) => ({
         No: index + 1,
