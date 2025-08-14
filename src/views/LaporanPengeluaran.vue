@@ -137,12 +137,12 @@ export default {
       this.$router.push('/login');
     },
     async fetchData() {
-
-      const response = await axios.get(import.meta.env.VITE_API_BASE_URL + '/expenses', {
-        params: {
-          month: this.selectedMonth,
-          year: this.selectedYear
-        }
+      const queries = {
+        month: this.selectedMonth,
+        year: this.selectedYear
+      };
+      const response = await axios.get(import.meta.env.VITE_API_BASE_URL + `/expenses`, {
+        params: queries
       });
       this.allData = response.data;
       const filteredPaket = response.data.filter(item => item.type === 'Package');

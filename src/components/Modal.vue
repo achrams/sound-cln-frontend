@@ -57,12 +57,15 @@ export default {
               description: this.deskripsi,
               price: this.harga
             });
+            location.reload();
           } else if (this.mode === 'edit') {
             const result = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/packages/${this.selectedItem.id}`, {
               name: this.nama,
               description: this.deskripsi,
               price: this.harga
             });
+            location.reload();
+
           }
         } else if (this.type === 'Barang') {
           if (this.mode === 'add') {
@@ -71,12 +74,16 @@ export default {
               qty: this.qty,
               price: this.harga
             });
+            location.reload();
+
           } else if (this.mode === 'edit') {
             const result = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/items/${this.selectedItem.id}`, {
               name: this.nama,
               qty: this.qty,
               price: this.harga
             });
+            location.reload();
+
           }
         }
       } catch (err) {

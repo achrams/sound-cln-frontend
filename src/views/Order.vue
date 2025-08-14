@@ -138,7 +138,7 @@ export default {
     methods: {
         async getPackages() {
             try {
-                const response = await axios.get(import.meta.env.VITE_API_BASE_URL+'/packages');
+                const response = await axios.get(import.meta.env.VITE_API_BASE_URL + '/packages');
                 this.packages = response.data;
             } catch (error) {
                 console.error("Error fetching packages:", error);
@@ -146,7 +146,7 @@ export default {
         },
         async getItems() {
             try {
-                const response = await axios.get(import.meta.env.VITE_API_BASE_URL+'/items');
+                const response = await axios.get(import.meta.env.VITE_API_BASE_URL + '/items');
                 this.items = response.data;
             } catch (error) {
                 console.error("Error fetching items:", error);
@@ -179,7 +179,7 @@ export default {
             const totalPackagePrice = this.form.paket ? this.form.paket.price : 0;
             const totalItemsPrice = this.orderList.reduce((total, item) => total + (item.price * item.qty), 0);
             const totalPrice = (totalPackagePrice + totalItemsPrice) * this.form.lamaSewa;
-            axios.post(import.meta.env.VITE_API_BASE_URL+'/invoices', {
+            axios.post(import.meta.env.VITE_API_BASE_URL + '/invoices', {
                 name: this.form.nama,
                 address: this.form.alamat,
                 phone: this.form.noTelp,
@@ -197,7 +197,7 @@ export default {
             })
                 .then(response => {
                     console.log("Order successful:", response.data);
-                    return axios.post(import.meta.env.VITE_API_BASE_URL+'/income', {
+                    return axios.post(import.meta.env.VITE_API_BASE_URL + '/income', {
                         name: this.form.nama,
                         phone: this.form.noTelp,
                         itemList: this.form.paket.name ? this.form.paket.name : this.orderList.map(item => item.name).join(', '),
@@ -209,7 +209,9 @@ export default {
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString()
                     });
-                    this.$router.push('/'); // Redirect to invoices page
+                })
+                .then(() => {
+                    this.$router.push('/income');
                 })
                 .catch(error => {
                     console.error("Error placing order:", error);

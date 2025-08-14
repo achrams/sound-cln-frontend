@@ -143,7 +143,7 @@ export default {
         params: {
           month: this.selectedMonth,
           year: this.selectedYear
-        }
+        },
       });
       this.allData = response.data;
       const filteredPaket = response.data.filter(item => item.type === 'Package');
