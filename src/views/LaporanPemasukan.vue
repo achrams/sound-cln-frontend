@@ -137,6 +137,12 @@ export default {
       localStorage.removeItem('token');
       this.$router.push('/login');
     },
+
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+
     async fetchData() {
 
       const response = await axios.get(import.meta.env.VITE_API_BASE_URL + '/income', {
@@ -150,11 +156,6 @@ export default {
       const filteredBarang = response.data.filter(item => item.type === 'Item');
       this.paket = filteredPaket
       this.barang = filteredBarang;
-    },
-
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
     },
 
     downloadExcel() {
