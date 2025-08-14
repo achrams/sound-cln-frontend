@@ -75,8 +75,8 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const income = await axios.get('http://localhost:3000/income');
-        const expenses = await axios.get('http://localhost:3000/expenses');
+        const income = await axios.get(import.meta.env.VITE_API_BASE_URL+'/income');
+        const expenses = await axios.get(import.meta.env.VITE_API_BASE_URL+'/expenses');
         income.data.forEach(item => item.transaction_type = 'Pemasukan');
         expenses.data.forEach(item => item.transaction_type = 'Pengeluaran');
         const res = [...income.data, ...expenses.data];

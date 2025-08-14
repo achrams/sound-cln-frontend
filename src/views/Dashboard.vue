@@ -183,8 +183,8 @@ export default {
   methods: {
     async getCalculations() {
       try {
-        const pemasukan = await axios.get('http://localhost:3000/income');
-        const pengeluaran = await axios.get('http://localhost:3000/expenses');
+        const pemasukan = await axios.get(import.meta.env.VITE_API_BASE_URL + '/income');
+        const pengeluaran = await axios.get(import.meta.env.VITE_API_BASE_URL + '/expenses');
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
         const currrentIncome = pemasukan.data.filter(item => new Date(item.createdAt).getFullYear() == currentYear && (new Date(item.createdAt).getMonth() + 1 === currentMonth));
@@ -208,7 +208,7 @@ export default {
       }).format(value);
     },
     getPackages: function () {
-      axios.get('http://localhost:3000/packages')
+      axios.get(import.meta.env.VITE_API_BASE_URL + '/packages')
         .then(response => {
           this.paket = response.data;
           console.log(response.data)
@@ -219,7 +219,7 @@ export default {
     },
 
     getItems: function () {
-      axios.get('http://localhost:3000/items')
+      axios.get(import.meta.env.VITE_API_BASE_URL + '/items')
         .then(response => {
           this.barang = response.data;
         })
@@ -229,7 +229,7 @@ export default {
     },
 
     deletePackage: function (id) {
-      axios.delete(`http://localhost:3000/packages/${id}`)
+      axios.delete(`${import.meta.env.VITE_API_BASE_URL}/packages/${id}`)
         .then(response => {
           this.getPackages();
         })
@@ -239,7 +239,7 @@ export default {
     },
 
     deleteItem: function (id) {
-      axios.delete(`http://localhost:3000/items/${id}`)
+      axios.delete(`${import.meta.env.VITE_API_BASE_URL}/items/${id}`)
         .then(response => {
           this.getItems();
         })
@@ -264,11 +264,12 @@ export default {
   },
   created() {
     console.log(this.$route.path)
-    this.getPackages();
-    this.getItems();
-    this.getCalculations();
     if (localStorage.getItem('token') === null) {
       this.$router.push('/login')
+    } else {
+      this.getPackages();
+      this.getItems();
+      this.getCalculations();
     }
   }
 };

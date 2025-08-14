@@ -50,7 +50,7 @@ export default {
         return;
       }
 
-      axios.get('http://localhost:3000/user', {
+      axios.get(import.meta.env.VITE_API_BASE_URL + '/user', {
         params: {
           name: this.username
         }
@@ -66,11 +66,12 @@ export default {
                 className: "info",
               }).showToast();
               return;
+            } else {
+              const token = this.generateCode();
+              localStorage.setItem('token', token);
+              localStorage.setItem('role', user.role);
+              this.$router.push('/');
             }
-            const token = this.generateCode();
-            localStorage.setItem('token', token);
-            localStorage.setItem('role', user.role);
-            this.$router.push('/');
           } else {
             Toastify({
               text: "Invalid Username or Password",

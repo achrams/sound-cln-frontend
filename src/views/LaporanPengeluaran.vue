@@ -99,7 +99,8 @@
 <script>
 import SideBar from '@/components/Sidebar.vue';
 import ModalWindow from '../components/Modal.vue';
-import axios from 'axios';
+import axios, { all } from 'axios';
+import * as XLSX from 'xlsx';
 export default {
   components: {
     ModalWindow,
@@ -117,6 +118,7 @@ export default {
       years: [2025, 2024, 2023, 2022, 2021],
       paket: [],
       barang: [],
+      allData: [],
     };
   },
   methods: {
@@ -136,17 +138,39 @@ export default {
     },
     async fetchData() {
 
-      const response = await axios.get('http://localhost:3000/expenses', {
+      const response = await axios.get(import.meta.env.VITE_API_BASE_URL + '/expenses', {
         params: {
           month: this.selectedMonth,
           year: this.selectedYear
         }
       });
-
+      this.allData = response.data;
       const filteredPaket = response.data.filter(item => item.type === 'Package');
       const filteredBarang = response.data.filter(item => item.type === 'Item');
       this.paket = filteredPaket
       this.barang = filteredBarang;
+    },
+
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+
+    downloadFile() {
+      const data = this.allData.map((item, index) => ({
+        No: index + 1,
+        'Tanggal Transaksi': this.formatDate(item.createdAt),
+        'Tipe Transaksi': item.transaction_type,
+        Nominal: item.total,
+        'Nama Pemesan': item.name,
+        Keterangan: item.description
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Laporan Pengeluaran');
+
+      XLSX.writeFile(workbook, `laporan_pengeluaran_${this.selectedYear}_${this.selectedMonth}.xlsx`);
     }
   },
   created() {

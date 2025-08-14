@@ -52,13 +52,13 @@ export default {
       try {
         if (this.type === 'Paket') {
           if (this.mode === 'add') {
-            const result = await axios.post('http://localhost:3000/packages', {
+            const result = await axios.post(import.meta.env.VITE_API_BASE_URL + '/packages', {
               name: this.nama,
               description: this.deskripsi,
               price: this.harga
             });
           } else if (this.mode === 'edit') {
-            const result = await axios.put(`http://localhost:3000/packages/${this.selectedItem.id}`, {
+            const result = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/packages/${this.selectedItem.id}`, {
               name: this.nama,
               description: this.deskripsi,
               price: this.harga
@@ -66,13 +66,13 @@ export default {
           }
         } else if (this.type === 'Barang') {
           if (this.mode === 'add') {
-            const result = await axios.post('http://localhost:3000/items', {
+            const result = await axios.post(import.meta.env.VITE_API_BASE_URL + '/items', {
               name: this.nama,
               qty: this.qty,
               price: this.harga
             });
           } else if (this.mode === 'edit') {
-            const result = await axios.put(`http://localhost:3000/items/${this.selectedItem.id}`, {
+            const result = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/items/${this.selectedItem.id}`, {
               name: this.nama,
               qty: this.qty,
               price: this.harga

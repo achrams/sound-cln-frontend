@@ -85,7 +85,8 @@
         </div>
       </div>
       <div class="flex justify-center mt-6">
-        <button @click="downloadFile" class="px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
+        <button @click="downloadExcel"
+          class="px-4 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
           Download File
         </button>
       </div>
@@ -99,7 +100,8 @@
 <script>
 import SideBar from '@/components/Sidebar.vue';
 import ModalWindow from '../components/Modal.vue';
-import axios from 'axios';
+import axios, { all } from 'axios';
+import * as XLSX from 'xlsx';
 export default {
   components: {
     ModalWindow,
@@ -117,6 +119,7 @@ export default {
       years: [2025, 2024, 2023, 2022, 2021],
       paket: [],
       barang: [],
+      allData: [],
     };
   },
   methods: {
@@ -136,17 +139,34 @@ export default {
     },
     async fetchData() {
 
-      const response = await axios.get('http://localhost:3000/income', {
+      const response = await axios.get(import.meta.env.VITE_API_BASE_URL + '/income', {
         params: {
           month: this.selectedMonth,
           year: this.selectedYear
         }
       });
-
+      this.allData = response.data;
       const filteredPaket = response.data.filter(item => item.type === 'Package');
       const filteredBarang = response.data.filter(item => item.type === 'Item');
       this.paket = filteredPaket
       this.barang = filteredBarang;
+    },
+
+    downloadExcel() {
+      const data = this.allData.map((item, index) => ({
+        No: index + 1,
+        'Tanggal Transaksi': this.formatDate(item.createdAt),
+        'Tipe Transaksi': item.transaction_type,
+        Nominal: item.total,
+        'Nama Pemesan': item.name,
+        Keterangan: item.description
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Laporan Pemasukan');
+
+      XLSX.writeFile(workbook, `laporan_pemasukan_${this.selectedYear}_${this.selectedMonth}.xlsx`);
     }
   },
   created() {
